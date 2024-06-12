@@ -1,8 +1,14 @@
+import configparser
+
 import cv2
 import torch.cuda
 from ultralytics import YOLO
 
-path = "samples/crowd.jpg"
+path = "samples/"
+config = configparser.ConfigParser()
+config.read('cfg.ini')
+input = path + config['local']['input'] + '.jpg'
+output = 'out/' + config['local']['output'] + '.jpg'
 
 
 def checkDevices():
@@ -25,7 +31,7 @@ def yoloPredict():
     # return model.export(format="onnx")
 
     # Perform object detection on an image using the model
-    results = model(path)
+    results = model(input)
 
     # build output frame
     build_output(results, model)
@@ -33,7 +39,7 @@ def yoloPredict():
 
 def build_output(results, model):
     # Load the original image
-    image = cv2.imread(path)
+    image = cv2.imread(input)
 
     # Iterate over each detection
     for result in results:
@@ -52,11 +58,7 @@ def build_output(results, model):
             cv2.putText(image, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
 
     # Save the image
-    output_path = 'out/result.jpg'
-    cv2.imwrite(output_path, image)
-
-    print(f"Output image saved to {output_path}")
-
+    cv2.imwrite(output, image)
 
 if __name__ == '__main__':
     checkDevices()
