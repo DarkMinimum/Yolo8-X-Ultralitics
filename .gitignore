@@ -1,0 +1,8 @@
+out/
+samples/
+*.iml
+*.pt
+.venv/
+.idea/
+/shelf/
+/workspace.xml
